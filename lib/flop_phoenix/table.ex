@@ -160,6 +160,7 @@ defmodule Flop.Phoenix.Table do
       |> Map.get(:tbody_td_attrs, [])
       |> maybe_invoke_options_callback(item)
 
+    Keyword.merge(tbody_td_attrs, attrs)
     merge_attrs(tbody_td_attrs, col, :tbody_td_attrs)
   end
 
