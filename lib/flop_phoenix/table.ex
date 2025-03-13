@@ -35,20 +35,20 @@ defmodule Flop.Phoenix.Table do
     |> Misc.deep_merge(opts)
   end
 
-  attr :id, :string, required: true
-  attr :meta, Flop.Meta, required: true
-  attr :path, :any, required: true
-  attr :on_sort, JS
-  attr :target, :string, required: true
-  attr :caption, :string, required: true
-  attr :opts, :any, required: true
-  attr :col, :any
-  attr :items, :list, required: true
-  attr :foot, :any, required: true
-  attr :row_id, :any, default: nil
-  attr :row_click, JS, default: nil
-  attr :row_item, :any, required: true
-  attr :action, :any, required: true
+  attr(:id, :string, required: true)
+  attr(:meta, Flop.Meta, required: true)
+  attr(:path, :any, required: true)
+  attr(:on_sort, JS)
+  attr(:target, :string, required: true)
+  attr(:caption, :string, required: true)
+  attr(:opts, :any, required: true)
+  attr(:col, :any)
+  attr(:items, :list, required: true)
+  attr(:foot, :any, required: true)
+  attr(:row_id, :any, default: nil)
+  attr(:row_click, JS, default: nil)
+  attr(:row_item, :any, required: true)
+  attr(:action, :any, required: true)
 
   def render(assigns) do
     assigns =
@@ -129,14 +129,38 @@ defmodule Flop.Phoenix.Table do
 
   defp merge_attrs(base_attrs, col, key) when is_atom(key) do
     attrs = Map.get(col, key, [])
-    Keyword.merge(base_attrs, attrs)
+
+    base_attrs
+    |> Keyword.merge(attrs)
+    |> add_combined_classes(col, key)
   end
+
+  # Hilfsfunktion zum Hinzufügen der Klassen in der richtigen Reihenfolge
+  defp add_combined_classes(attrs, col, :thead_th_attrs) do
+    Keyword.update(attrs, :class, "", fn existing ->
+      [existing, col[:td_th_class], col[:th_class]]
+      |> Enum.reject(&is_nil/1)
+      |> Enum.join(" ")
+    end)
+  end
+
+  defp add_combined_classes(attrs, col, :tbody_td_attrs) do
+    Keyword.update(attrs, :class, "", fn existing ->
+      [existing, col[:td_th_class], col[:td_class]]
+      |> Enum.reject(&is_nil/1)
+      |> Enum.join(" ")
+    end)
+  end
+
+  defp add_combined_classes(attrs, _col, _key), do: attrs
 
   defp merge_td_attrs(tbody_td_attrs, col, item) do
     attrs =
-      col |> Map.get(:tbody_td_attrs, []) |> maybe_invoke_options_callback(item)
+      col
+      |> Map.get(:tbody_td_attrs, [])
+      |> maybe_invoke_options_callback(item)
 
-    Keyword.merge(tbody_td_attrs, attrs)
+    merge_attrs(tbody_td_attrs, col, :tbody_td_attrs)
   end
 
   defp maybe_invoke_options_callback(option, item) when is_function(option) do
@@ -160,20 +184,21 @@ defmodule Flop.Phoenix.Table do
     Enum.reject(attrs, fn {_, v} -> v in ["", nil] end)
   end
 
-  attr :meta, Flop.Meta, required: true
-  attr :field, :atom, required: true
-  attr :label, :any, required: true
-  attr :path, :any, required: true
-  attr :on_sort, JS
-  attr :target, :string, required: true
-  attr :sortable, :boolean, required: true
-  attr :thead_th_attrs, :list, required: true
-  attr :directions, :any
-  attr :symbol_asc, :any
-  attr :symbol_desc, :any
-  attr :symbol_unsorted, :any
-  attr :symbol_attrs, :list
-  attr :th_wrapper_attrs, :list
+  attr(:meta, Flop.Meta, required: true)
+  attr(:field, :atom, required: true)
+  attr(:label, :any, required: true)
+  attr(:path, :any, required: true)
+  attr(:on_sort, JS)
+  attr(:target, :string, required: true)
+  attr(:sortable, :boolean, required: true)
+  attr(:thead_th_attrs, :list, required: true)
+  attr(:directions, :any)
+  attr(:symbol_asc, :any)
+  attr(:symbol_desc, :any)
+  attr(:symbol_unsorted, :any)
+  attr(:symbol_attrs, :list)
+  attr(:th_wrapper_attrs, :list)
+  attr(:td_th_class, :string)
 
   defp header_column(%{sortable: true} = assigns) do
     direction = order_direction(assigns.meta.flop, assigns.field)
@@ -193,6 +218,17 @@ defmodule Flop.Phoenix.Table do
       )
 
     assigns = assign(assigns, :sort_path, sort_path)
+
+    # Verwende td_th_class direkt aus den assigns
+    th_attrs =
+      assigns.thead_th_attrs
+      |> Keyword.update(:class, assigns[:td_th_class], fn existing ->
+        [existing, assigns[:td_th_class]]
+        |> Enum.reject(&is_nil/1)
+        |> Enum.join(" ")
+      end)
+
+    assigns = assign(assigns, :thead_th_attrs, th_attrs)
 
     ~H"""
     <th {@thead_th_attrs} aria-sort={aria_sort(@order_direction)}>
@@ -217,6 +253,17 @@ defmodule Flop.Phoenix.Table do
   end
 
   defp header_column(%{sortable: false} = assigns) do
+    # Verwende td_th_class direkt aus den assigns
+    th_attrs =
+      assigns.thead_th_attrs
+      |> Keyword.update(:class, assigns[:td_th_class], fn existing ->
+        [existing, assigns[:td_th_class]]
+        |> Enum.reject(&is_nil/1)
+        |> Enum.join(" ")
+      end)
+
+    assigns = assign(assigns, :thead_th_attrs, th_attrs)
+
     ~H"""
     <th {@thead_th_attrs}>{@label}</th>
     """
@@ -230,11 +277,11 @@ defmodule Flop.Phoenix.Table do
   defp aria_sort(:asc_nulls_first), do: "ascending"
   defp aria_sort(_), do: nil
 
-  attr :direction, :atom, required: true
-  attr :symbol_asc, :any, required: true
-  attr :symbol_desc, :any, required: true
-  attr :symbol_unsorted, :any, required: true
-  attr :rest, :global
+  attr(:direction, :atom, required: true)
+  attr(:symbol_asc, :any, required: true)
+  attr(:symbol_desc, :any, required: true)
+  attr(:symbol_unsorted, :any, required: true)
+  attr(:rest, :global)
 
   defp arrow(%{direction: direction} = assigns)
        when direction in [:asc, :asc_nulls_first, :asc_nulls_last] do
@@ -254,11 +301,11 @@ defmodule Flop.Phoenix.Table do
     ~H"<span {@rest}>{@symbol_unsorted}</span>"
   end
 
-  attr :field, :atom, required: true
-  attr :label, :string, required: true
-  attr :path, :string
-  attr :on_sort, JS
-  attr :target, :string
+  attr(:field, :atom, required: true)
+  attr(:label, :string, required: true)
+  attr(:path, :string)
+  attr(:on_sort, JS)
+  attr(:target, :string)
 
   defp sort_link(%{on_sort: nil, path: path} = assigns)
        when is_binary(path) do

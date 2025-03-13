@@ -292,13 +292,14 @@ defmodule Flop.Phoenix do
   @doc section: :components
   @spec pagination(map) :: Phoenix.LiveView.Rendered.t()
 
-  attr :meta, Flop.Meta,
+  attr(:meta, Flop.Meta,
     required: true,
     doc: """
     The meta information of the query as returned by the `Flop` query functions.
     """
+  )
 
-  attr :path, :any,
+  attr(:path, :any,
     default: nil,
     doc: """
     If set, the current view is patched with updated query parameters when a
@@ -309,8 +310,9 @@ defmodule Flop.Phoenix do
     tuple (Phoenix route helper), or a 1-ary path builder function. See
     `Flop.Phoenix.build_path/3` for details.
     """
+  )
 
-  attr :on_paginate, JS,
+  attr(:on_paginate, JS,
     default: nil,
     doc: """
     A `Phoenix.LiveView.JS` command that is triggered when a pagination link is
@@ -357,14 +359,16 @@ defmodule Flop.Phoenix do
     }
     ```
     """
+  )
 
-  attr :target, :string,
+  attr(:target, :string,
     default: nil,
     doc: """
     Sets the `phx-target` attribute for the pagination links.
     """
+  )
 
-  attr :page_links, :any,
+  attr(:page_links, :any,
     default: 5,
     doc: """
     Defines how many page links to render.
@@ -376,8 +380,9 @@ defmodule Flop.Phoenix do
 
     This attribute is only used for page-based pagination.
     """
+  )
 
-  attr :reverse, :boolean,
+  attr(:reverse, :boolean,
     default: false,
     doc: """
     By default, the `next` link moves forward with the `:after` parameter set to
@@ -387,8 +392,9 @@ defmodule Flop.Phoenix do
 
     This attribute is only for for cursor-based pagination.
     """
+  )
 
-  attr :opts, :list,
+  attr(:opts, :list,
     default: [],
     doc: """
     Options to customize the pagination. See
@@ -398,8 +404,9 @@ defmodule Flop.Phoenix do
     define them once in a function or set them in a wrapper function as
     described in the `Customization` section of the module documentation.
     """
+  )
 
-  attr :rest, :global,
+  attr(:rest, :global,
     default: %{"aria-label": "Pagination"},
     doc: """
     The attributes are added to the outer `<nav>` element.
@@ -411,8 +418,9 @@ defmodule Flop.Phoenix do
     pagination components are rendered on the same page, each one should have
     a distinct aria label.
     """
+  )
 
-  slot :ellipsis,
+  slot(:ellipsis,
     doc: """
     The content of the `<li>` element that usually shows an ellipsis and is
     rendered toward the beginning and/or end of the page links if there are
@@ -424,6 +432,7 @@ defmodule Flop.Phoenix do
     <span aria-hidden="true">&hellip;</span>
     ```
     """
+  )
 
   def pagination(%{path: nil, on_paginate: nil}) do
     raise Flop.Phoenix.PathOrJSError, component: :pagination
@@ -508,17 +517,17 @@ defmodule Flop.Phoenix do
     """
   end
 
-  attr :current_page, :integer, required: true
-  attr :ellipsis_end?, :boolean, required: true
-  attr :ellipsis_start?, :boolean, required: true
-  attr :on_paginate, JS
-  attr :opts, :list, required: true
-  attr :path_fun, :any, required: true
-  attr :page_range_end, :integer, required: true
-  attr :page_range_start, :integer, required: true
-  attr :target, :string, required: true
-  attr :total_pages, :integer, required: true
-  attr :ellipsis, :any
+  attr(:current_page, :integer, required: true)
+  attr(:ellipsis_end?, :boolean, required: true)
+  attr(:ellipsis_start?, :boolean, required: true)
+  attr(:on_paginate, JS)
+  attr(:opts, :list, required: true)
+  attr(:path_fun, :any, required: true)
+  attr(:page_range_end, :integer, required: true)
+  attr(:page_range_start, :integer, required: true)
+  attr(:target, :string, required: true)
+  attr(:total_pages, :integer, required: true)
+  attr(:ellipsis, :any)
 
   defp page_links(assigns) do
     ~H"""
@@ -586,18 +595,16 @@ defmodule Flop.Phoenix do
     """
   end
 
-  attr :path, :string
-  attr :on_paginate, JS
-  attr :target, :string, required: true
-  attr :page, :integer, required: true
-  attr :disabled, :boolean, default: false
-  attr :disabled_class, :string
-  attr :rest, :global
-  slot :inner_block
+  attr(:path, :string)
+  attr(:on_paginate, JS)
+  attr(:target, :string, required: true)
+  attr(:page, :integer, required: true)
+  attr(:disabled, :boolean, default: false)
+  attr(:disabled_class, :string)
+  attr(:rest, :global)
+  slot(:inner_block)
 
-  defp pagination_link(
-         %{disabled: true, disabled_class: disabled_class} = assigns
-       ) do
+  defp pagination_link(%{disabled: true, disabled_class: disabled_class} = assigns) do
     rest =
       Map.update(assigns.rest, :class, disabled_class, fn class ->
         [class, disabled_class]
@@ -635,18 +642,16 @@ defmodule Flop.Phoenix do
     """
   end
 
-  attr :direction, :atom, required: true
-  attr :path, :string
-  attr :on_paginate, JS
-  attr :target, :string, required: true
-  attr :disabled, :boolean, default: false
-  attr :disabled_class, :string, required: true
-  attr :rest, :global
-  slot :inner_block
+  attr(:direction, :atom, required: true)
+  attr(:path, :string)
+  attr(:on_paginate, JS)
+  attr(:target, :string, required: true)
+  attr(:disabled, :boolean, default: false)
+  attr(:disabled_class, :string, required: true)
+  attr(:rest, :global)
+  slot(:inner_block)
 
-  defp cursor_pagination_link(
-         %{disabled: true, disabled_class: disabled_class} = assigns
-       ) do
+  defp cursor_pagination_link(%{disabled: true, disabled_class: disabled_class} = assigns) do
     rest =
       Map.update(assigns.rest, :class, disabled_class, fn class ->
         [class, disabled_class]
@@ -711,13 +716,14 @@ defmodule Flop.Phoenix do
   @doc since: "0.24.0"
   @spec pagination_for(map) :: Phoenix.LiveView.Rendered.t()
 
-  attr :meta, Flop.Meta,
+  attr(:meta, Flop.Meta,
     required: true,
     doc: """
     The meta information of the query as returned by the `Flop` query functions.
     """
+  )
 
-  attr :path, :any,
+  attr(:path, :any,
     default: nil,
     doc: """
     If set, a function that takes a page number and returns a link with
@@ -728,8 +734,9 @@ defmodule Flop.Phoenix do
     tuple (Phoenix route helper), or a 1-ary path builder function. See
     `Flop.Phoenix.build_path/3` for details.
     """
+  )
 
-  attr :page_links, :any,
+  attr(:page_links, :any,
     default: 5,
     doc: """
     Defines how many page links to render.
@@ -743,8 +750,9 @@ defmodule Flop.Phoenix do
     inner block based on this option. If this attribute is set to `:none`, both
     of those values will be `nil`.
     """
+  )
 
-  attr :reverse, :boolean,
+  attr(:reverse, :boolean,
     default: false,
     doc: """
     By default, the `next` link moves forward with the `:after` parameter set to
@@ -752,8 +760,9 @@ defmodule Flop.Phoenix do
     parameter set to the start cursor. If `reverse` is set to `true`, the
     destinations of the links are switched.
     """
+  )
 
-  slot :inner_block, required: true
+  slot(:inner_block, required: true)
 
   def pagination_for(
         %{
@@ -850,26 +859,29 @@ defmodule Flop.Phoenix do
   @doc section: :components
   @spec table(map) :: Phoenix.LiveView.Rendered.t()
 
-  attr :id, :string,
+  attr(:id, :string,
     doc: """
     ID used on the table. If not set, an ID is chosen based on the schema
     module derived from the `Flop.Meta` struct.
 
     The ID is necessary in case the table is fed with a LiveView stream.
     """
+  )
 
-  attr :items, :list,
+  attr(:items, :list,
     required: true,
     doc: """
     The list of items to be displayed in rows. This is the result list returned
     by the query.
     """
+  )
 
-  attr :meta, Flop.Meta,
+  attr(:meta, Flop.Meta,
     required: true,
     doc: "The `Flop.Meta` struct returned by the query function."
+  )
 
-  attr :path, :any,
+  attr(:path, :any,
     default: nil,
     doc: """
     If set, the current view is patched with updated query parameters when a
@@ -880,8 +892,9 @@ defmodule Flop.Phoenix do
     tuple (Phoenix route helper), or a 1-ary path builder function. See
     `Flop.Phoenix.build_path/3` for details.
     """
+  )
 
-  attr :on_sort, JS,
+  attr(:on_sort, JS,
     default: nil,
     doc: """
     A `Phoenix.LiveView.JS` command that is triggered when a header link for
@@ -911,16 +924,19 @@ defmodule Flop.Phoenix do
     />
     ```
     """
+  )
 
-  attr :target, :string,
+  attr(:target, :string,
     default: nil,
     doc: "Sets the `phx-target` attribute for the header links."
+  )
 
-  attr :caption, :string,
+  attr(:caption, :string,
     default: nil,
     doc: "Content for the `<caption>` element."
+  )
 
-  attr :opts, :list,
+  attr(:opts, :list,
     default: [],
     doc: """
     Keyword list with additional options (see `t:Flop.Phoenix.table_option/0`).
@@ -930,14 +946,16 @@ defmodule Flop.Phoenix do
     set them in a wrapper function as described in the `Customization` section
     of the module documentation.
     """
+  )
 
-  attr :row_id, :any,
+  attr(:row_id, :any,
     default: nil,
     doc: """
     Overrides the default function that retrieves the row ID from a stream item.
     """
+  )
 
-  attr :row_click, :any,
+  attr(:row_click, :any,
     default: nil,
     doc: """
     Sets the `phx-click` function attribute for each row `td`. Expects to be a
@@ -950,13 +968,15 @@ defmodule Flop.Phoenix do
     row_click={&JS.navigate(~p"/users/\#{&1}")}
     ```
     """
+  )
 
-  attr :row_item, :any,
+  attr(:row_item, :any,
     default: &Function.identity/1,
     doc: """
     This function is called on the row item before it is passed to the :col
     and :action slots.
     """
+  )
 
   slot :col,
     required: true,
@@ -972,9 +992,9 @@ defmodule Flop.Phoenix do
     Any additional assigns will be added as attributes to the `<td>` elements.
 
     """ do
-    attr :label, :any, doc: "The content for the header column."
+    attr(:label, :any, doc: "The content for the header column.")
 
-    attr :field, :atom,
+    attr(:field, :atom,
       doc: """
       The field name for sorting. If set and the field is configured as sortable
       in the schema, the column header will be clickable, allowing the user to
@@ -982,51 +1002,76 @@ defmodule Flop.Phoenix do
       `field` attribute is omitted or set to `nil` or `false`, the column header
       will not be clickable.
       """
+    )
 
-    attr :directions, :any,
+    attr(:directions, :any,
       doc: """
       An optional 2-element tuple used for custom ascending and descending sort
       behavior for the column, i.e. `{:asc_nulls_last, :desc_nulls_first}`
       """
+    )
 
-    attr :col_style, :string,
+    attr(:col_style, :string,
       doc: """
       If set, a `<colgroup>` element is rendered and the value of the
       `col_style` assign is set as `style` attribute for the `<col>` element of
       the respective column. You can set the `width`, `background`, `border`,
       and `visibility` of a column this way.
       """
+    )
 
-    attr :col_class, :string,
+    attr(:col_class, :string,
       doc: """
       If set, a `<colgroup>` element is rendered and the value of the
       `col_class` assign is set as `class` attribute for the `<col>` element of
       the respective column. You can set the `width`, `background`, `border`,
       and `visibility` of a column this way.
       """
+    )
 
-    attr :thead_th_attrs, :list,
+    attr(:thead_th_attrs, :list,
       doc: """
       Additional attributes to pass to the `<th>` element as a static keyword
       list. Note that these attributes will override any conflicting
       `thead_th_attrs` that are set at the table level.
       """
+    )
 
-    attr :th_wrapper_attrs, :list,
+    attr(:td_th_class, :string,
+      doc: """
+      Common classes that are applied to both <tr> and <td> elements.
+      """
+    )
+
+    attr(:th_class, :string,
+      doc: """
+      Classes that are only applied to the <th> element.
+      """
+    )
+
+    attr(:td_class, :string,
+      doc: """
+      Classes that are only applied to the <td> element.
+      """
+    )
+
+    attr(:th_wrapper_attrs, :list,
       doc: """
       Additional attributes for the `<span>` element that wraps the
       header link and the order direction symbol. Note that these attributes
       will override any conflicting `th_wrapper_attrs` that are set at the table
       level.
       """
+    )
 
-    attr :tbody_td_attrs, :any,
+    attr(:tbody_td_attrs, :any,
       doc: """
       Additional attributes to pass to the `<td>` element. May be provided as a
       static keyword list, or as a 1-arity function to dynamically generate the
       list using row data. Note that these attributes will override any
       conflicting `tbody_td_attrs` that are set at the table level.
       """
+    )
   end
 
   slot :action,
@@ -1041,38 +1086,60 @@ defmodule Flop.Phoenix do
     </:action>
     ```
     """ do
-    attr :label, :string, doc: "The content for the header column."
+    attr(:label, :string, doc: "The content for the header column.")
 
-    attr :col_style, :string,
+    attr(:td_th_class, :string,
+      doc: """
+      Common classes that are applied to both <tr> and <td> elements.
+      """
+    )
+
+    attr(:th_class, :string,
+      doc: """
+      Classes that are only applied to the <th> element.
+      """
+    )
+
+    attr(:td_class, :string,
+      doc: """
+      Classes that are only applied to the <td> element.
+      """
+    )
+
+    attr(:col_style, :string,
       doc: """
       If set, a `<colgroup>` element is rendered and the value of the
       `col_style` assign is set as `style` attribute for the `<col>` element of
       the respective column. You can set the `width`, `background`, `border`,
       and `visibility` of a column this way.
       """
+    )
 
-    attr :col_class, :string,
+    attr(:col_class, :string,
       doc: """
       If set, a `<colgroup>` element is rendered and the value of the
       `col_class` assign is set as `class` attribute for the `<col>` element of
       the respective column. You can set the `width`, `background`, `border`,
       and `visibility` of a column this way.
       """
+    )
 
-    attr :thead_th_attrs, :list,
+    attr(:thead_th_attrs, :list,
       doc: """
       Any additional attributes to pass to the `<th>` as a keyword list.
       """
+    )
 
-    attr :tbody_td_attrs, :any,
+    attr(:tbody_td_attrs, :any,
       doc: """
       Any additional attributes to pass to the `<td>`. Can be a keyword list or
       a function that takes the current row item as an argument and returns a
       keyword list.
       """
+    )
   end
 
-  slot :foot,
+  slot(:foot,
     doc: """
     You can optionally add a `foot`. The inner block will be rendered inside
     a `tfoot` element.
@@ -1085,6 +1152,7 @@ defmodule Flop.Phoenix do
     </Flop.Phoenix.table>
     ```
     """
+  )
 
   def table(%{path: nil, on_sort: nil}) do
     raise Flop.Phoenix.PathOrJSError, component: :table
@@ -1221,9 +1289,9 @@ defmodule Flop.Phoenix do
   @doc section: :components
   @spec filter_fields(map) :: Phoenix.LiveView.Rendered.t()
 
-  attr :form, Phoenix.HTML.Form, required: true
+  attr(:form, Phoenix.HTML.Form, required: true)
 
-  attr :fields, :list,
+  attr(:fields, :list,
     default: [],
     doc: """
     The list of fields and field options. Note that inputs will not be rendered
@@ -1239,8 +1307,9 @@ defmodule Flop.Phoenix do
     Note that in a dynamic form, it is not possible to configure a single field
     multiple times.
     """
+  )
 
-  attr :dynamic, :boolean,
+  attr(:dynamic, :boolean,
     default: false,
     doc: """
     If `true`, fields are only rendered for filters that are present in the
@@ -1248,8 +1317,9 @@ defmodule Flop.Phoenix do
     forms that allow the user to add and remove filters dynamically. The
     `fields` assign is only used for looking up the options in that case.
     """
+  )
 
-  slot :inner_block,
+  slot(:inner_block,
     doc: """
     The necessary options for rendering a label and an input are passed to the
     inner block, which allows you to render the fields with your existing
@@ -1273,6 +1343,7 @@ defmodule Flop.Phoenix do
     - `label` - The label text as a string.
     - `rest` - Any additional options passed in the field options.
     """
+  )
 
   def filter_fields(assigns) do
     ensure_meta_form!(assigns.form)
@@ -1356,7 +1427,7 @@ defmodule Flop.Phoenix do
   @doc since: "0.16.0"
   @doc section: :components
 
-  attr :form, Phoenix.HTML.Form, required: true
+  attr(:form, Phoenix.HTML.Form, required: true)
 
   def hidden_inputs_for_filter(assigns) do
     ~H"""
@@ -1369,9 +1440,9 @@ defmodule Flop.Phoenix do
     """
   end
 
-  attr :form, Phoenix.HTML.Form, required: true
-  attr :field, :atom, required: true
-  attr :value, :any, required: true
+  attr(:form, Phoenix.HTML.Form, required: true)
+  attr(:field, :atom, required: true)
+  attr(:value, :any, required: true)
 
   defp hidden_inputs(%{value: value} = assigns) when is_list(value) do
     ~H"""
